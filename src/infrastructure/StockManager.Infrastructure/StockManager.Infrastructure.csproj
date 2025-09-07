@@ -2,6 +2,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\domain\StockManager.Domain\StockManager.Domain.csproj" />
+    <ProjectReference Include="..\..\application\StockManager.Application\StockManager.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="9.4.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
   </ItemGroup>
 
   <PropertyGroup>
