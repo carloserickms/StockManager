@@ -7,11 +7,11 @@ namespace domain.StockManager.Domain.Entities
         public string Name { get; private set; }
         public decimal Value { get; private set; }
         public double Amount { get; private set; }
-        public string UrlImage { get; private set; }
+        public string? UrlImage { get; private set; }
         public double Discount { get; private set; }
 
-
-        public Product() : base() { }
+        public ICollection<Material>? Materials { get; private set; } = new HashSet<Material>();
+        public ICollection<Color>? Colors { get; private set; } = new HashSet<Color>();
 
         public Product(string name, decimal value, double amount, string urlImage, double discount) : base()
         {
