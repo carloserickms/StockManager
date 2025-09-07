@@ -21,6 +21,8 @@ TestResults/
 coverage/
 *.snl
 *.sdf
+appsettings.json
+
 
 global.json
 packages/
