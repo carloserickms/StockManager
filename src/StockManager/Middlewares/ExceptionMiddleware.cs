@@ -33,14 +33,7 @@ namespace StockManager.Middlewares
 
             int statusCode;
 
-            if (exception is ArgumentException)
-            {
-                statusCode = 400;
-            }
-            else
-            {
-                statusCode = 500;
-            }
+            statusCode = 500;
 
             var response = new
             {

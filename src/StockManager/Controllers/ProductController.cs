@@ -1,4 +1,5 @@
 using application.StockManager.Application.Dtos.resquests;
+using application.StockManager.Application.responses;
 using application.StockManager.Application.Service;
 using Microsoft.AspNetCore.Mvc;
 using shared.StockManager.Shered.Helper;
@@ -21,7 +22,13 @@ namespace StockManager.Controllers
         public async Task<IActionResult> Post([FromBody] CreateProductDto createProduct)
         {
             var product = await _productService.CreateProduct(createProduct.ToProduct(), createProduct.MaterialIds, createProduct.ColorIds);
-            return ApiResponse.Created(product);
+
+            if (product is ProductResponseDto productCast)
+            {
+                return ApiResponse.Created(productCast, product.statusCode);
+            }
+
+            return ApiResponse.Fail(product.message, product.statusCode);
         }
     }
 }

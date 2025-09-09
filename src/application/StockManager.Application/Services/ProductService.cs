@@ -1,3 +1,4 @@
+using application.StockManager.Application.Dtos;
 using application.StockManager.Application.Interfaces;
 using application.StockManager.Application.responses;
 using domain.StockManager.Domain.Entities;
@@ -17,14 +18,20 @@ namespace application.StockManager.Application.Service
         }
 
 
-        public async Task<ProductResponseDto> CreateProduct(Product product, List<Guid>? materialIds, List<Guid>? colorIds)
+        public async Task<ResultResponseBase> CreateProduct(Product product, List<Guid>? materialIds, List<Guid>? colorIds)
         {
 
             if (product.UrlImage != null)
             {
                 if (!RegexUtils.IsValidImageUrl(product.UrlImage!))
                 {
-                    throw new ArgumentException("Url da imagem não é compativel com o formato, verifique se a url contém: https, .png ou .jpg.");
+                    OperationNotCompletedResponseDto notCompletedResponse = new()
+                    {
+                        message = "Url da imagem não é compativel com o formato, verifique se a url contém: https, .png ou .jpg.",
+                        statusCode = 400
+                    };
+
+                    return notCompletedResponse;
                 }
             }
 
@@ -41,6 +48,8 @@ namespace application.StockManager.Application.Service
 
             ProductResponseDto productResponse = new()
             {
+                message = "Produto Criado com sucesso!",
+                statusCode = 201,
                 name = product.Name,
                 amount = product.Amount,
                 discount = product.Discount,

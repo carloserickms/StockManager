@@ -1,14 +1,13 @@
 using application.StockManager.Application.Interfaces;
 using domain.StockManager.Domain.Entities;
 using infrastructure.StockManager.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace infrastructure.StockManager.Infrastructure.Repository
 {
     public class ProductRepository : RepositoryBase, IProductRepository
     {
         public ProductRepository(AppDbContext context) : base(context) { }
-
+  
         public async Task CreateProduct(Product product)
         {
             try
