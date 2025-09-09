@@ -8,6 +8,6 @@ namespace application.StockManager.Application.Interfaces
         Task<IEnumerable<Product>> GetProduct();
         Task<Product> GetProductById(Guid idProduct);
         Task<Product> UpdateProduct(Product product);
-        Task<Product> DeleteProduct(Product product);
+        Task DeleteProduct(Product product);
     }
 }
