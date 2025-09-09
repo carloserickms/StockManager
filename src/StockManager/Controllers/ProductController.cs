@@ -30,5 +30,23 @@ namespace StockManager.Controllers
 
             return ApiResponse.Fail(product.message, product.statusCode);
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromQuery] Guid productId)
+        {
+            ActionUserDto actionUser = new()
+            {
+                productId = productId
+            };
+
+            var result = await _productService.DeleteProduct(actionUser);
+
+            if (result is OperationCompletedResponseDto resultCast)
+            {
+                return ApiResponse.Success(resultCast.message, resultCast.statusCode);
+            }
+
+            return ApiResponse.NotFound(result.message, result.statusCode);
+        }
     }
 }

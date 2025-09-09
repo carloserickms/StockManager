@@ -1,4 +1,5 @@
 using application.StockManager.Application.Dtos;
+using application.StockManager.Application.Dtos.resquests;
 using application.StockManager.Application.Interfaces;
 using application.StockManager.Application.responses;
 using domain.StockManager.Domain.Entities;
@@ -65,6 +66,32 @@ namespace application.StockManager.Application.Service
             };
 
             return productResponse;
+        }
+
+        public async Task<ResultResponseBase> DeleteProduct(ActionUserDto actionUser)
+        {
+            var product = await _productRepository.GetProductById(actionUser.productId);
+
+            if (product == null)
+            {
+                OperationNotCompletedResponseDto notCompletedResponse = new()
+                {
+                    message = "Não foi possível encontrar o produto.",
+                    statusCode = 404
+                };
+
+                return notCompletedResponse;
+            }
+
+            await _productRepository.DeleteProduct(product);
+
+            OperationCompletedResponseDto operationCompleted = new()
+            {
+                message = "Produto deletado com sucesso!.",
+                statusCode = 204 
+            };
+
+            return operationCompleted;
         }
     }
 }
