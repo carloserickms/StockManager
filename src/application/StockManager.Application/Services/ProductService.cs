@@ -7,7 +7,7 @@ using shared.StockManager.Shered;
 
 namespace application.StockManager.Application.Service
 {
-    public class ProductService
+    public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
         private readonly IColorRepository _colorRepository;

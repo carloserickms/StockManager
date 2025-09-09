@@ -1,4 +1,5 @@
 using application.StockManager.Application.Dtos.resquests;
+using application.StockManager.Application.Interfaces;
 using application.StockManager.Application.responses;
 using application.StockManager.Application.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ namespace StockManager.Controllers
     public class ProductController : ControllerBase
     {
 
-        private readonly ProductService _productService;
+        private readonly IProductService _productService;
 
         public ProductController(ProductService productService)
         {

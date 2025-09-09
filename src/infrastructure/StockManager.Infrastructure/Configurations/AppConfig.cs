@@ -32,6 +32,7 @@ namespace infrastructure.StockManager.Infrastructure.Configurations
         {
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IColorRepository, ColorRepository>();
+            services.AddScoped<IProductService, ProductService>();
 
             services.AddScoped<ProductService>();
         }
