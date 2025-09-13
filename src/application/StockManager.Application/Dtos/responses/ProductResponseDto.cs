@@ -12,6 +12,5 @@ namespace application.StockManager.Application.responses
         public double discount { get; set; }
         public ICollection<ColorResponseDto>? colors { get; set; }
         public override string message { get; set; }
-        public override int statusCode { get; set; }
     }
 }
