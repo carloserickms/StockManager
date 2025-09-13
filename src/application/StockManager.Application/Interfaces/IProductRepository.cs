@@ -9,5 +9,7 @@ namespace application.StockManager.Application.Interfaces
         Task<Product> GetProductById(Guid idProduct);
         Task<Product> UpdateProduct(Product product);
         Task DeleteProduct(Product product);
+        public void AttachMaterial(Material material);
+        public void AttachColor(Color color);
     }
 }
