@@ -7,8 +7,8 @@ namespace shared.StockManager.Shered.Helper
         public static IActionResult Success<T>(T data, int statusCode) =>
             new ObjectResult(new { statusCode, data }) { StatusCode = 200 };
 
-        public static IActionResult Created<T>(T data, int statusCode) =>
-            new ObjectResult(new { statusCode, data }) { StatusCode = 201 };
+        public static IActionResult Created(string mansager, int statusCode) =>
+            new ObjectResult(new { statusCode, mansager }) { StatusCode = 201 };
 
         public static IActionResult Fail(string message, int statusCode) =>
             new ObjectResult(new { statusCode, message }) { StatusCode = 400 };
