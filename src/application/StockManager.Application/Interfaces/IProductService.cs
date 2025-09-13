@@ -6,7 +6,7 @@ namespace application.StockManager.Application.Interfaces
 {
     public interface IProductService
     {
-        public Task<ResultResponseBase> CreateProduct(Product product, List<Guid>? materialIds, List<Guid>? colorIds);
+        public Task<ResultResponseBase> CreateProduct(Product product, List<MaterialDto>? materialIds, List<Guid>? colorIds);
         public Task<ResultResponseBase> DeleteProduct(ActionUserDto actionUser);
     }
 }
