@@ -6,7 +6,7 @@ namespace domain.StockManager.Domain.Entities
     {
         [Key]
         [Required]
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
 
         protected BaseModelId()
         {
