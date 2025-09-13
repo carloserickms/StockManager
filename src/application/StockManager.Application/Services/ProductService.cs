@@ -11,15 +11,17 @@ namespace application.StockManager.Application.Service
     {
         private readonly IProductRepository _productRepository;
         private readonly IColorRepository _colorRepository;
+        private readonly IMaterialRepository _materialRepository;
 
-        public ProductService(IProductRepository productRepository, IColorRepository colorRepository)
+        public ProductService(IProductRepository productRepository, IColorRepository colorRepository, IMaterialRepository materialRepository)
         {
             _productRepository = productRepository;
             _colorRepository = colorRepository;
+            _materialRepository = materialRepository;
         }
 
 
-        public async Task<ResultResponseBase> CreateProduct(Product product, List<Guid>? materialIds, List<Guid>? colorIds)
+        public async Task<ResultResponseBase> CreateProduct(Product product, List<MaterialDto>? materials, List<Guid>? colorIds)
         {
 
             if (product.UrlImage != null)
@@ -36,36 +38,45 @@ namespace application.StockManager.Application.Service
                 }
             }
 
+            if (!materials.Any())
+            {
+                OperationNotCompletedResponseDto notCompletedResponse = new()
+                {
+                    message = "É necessário associar um ou mais materiais para criar um produto.",
+                    statusCode = 400
+                };
+
+                return notCompletedResponse;
+            }
+
+            var materialList = await _materialRepository.GetAllMaterialsOnTheList(materials);
+
+            foreach (var materialItem in materialList)
+            {
+                _productRepository.AttachMaterial(materialItem);
+                product.Materials.Add(materialItem);
+            }
+
             if (colorIds != null && colorIds.Any())
             {
-                foreach (var colorId in colorIds)
+
+                var colorList = await _colorRepository.GetAllColorsOnTheList(colorIds);
+
+                foreach (var colorItem in colorList)
                 {
-                    var color = await _colorRepository.GetColorById(colorId);
-                    product.Colors.Add(color);
+                    _productRepository.AttachColor(colorItem);
+                    product.Colors.Add(colorItem);
                 }
             }
 
             await _productRepository.CreateProduct(product);
 
-            ProductResponseDto productResponse = new()
+            OperationCompletedResponseDto operationCompleted = new()
             {
-                message = "Produto Criado com sucesso!",
-                statusCode = 201,
-                name = product.Name,
-                amount = product.Amount,
-                discount = product.Discount,
-                urlImage = product.UrlImage,
-                value = product.Value,
-                colors = product.Colors
-                        .Select(c => new ColorResponseDto
-                        {
-                            Id = c.Id,
-                            Name = c.Name
-                        })
-                        .ToList()
+                message = "Produto criado com sucesso!",
             };
 
-            return productResponse;
+            return operationCompleted;
         }
 
         public async Task<ResultResponseBase> DeleteProduct(ActionUserDto actionUser)
@@ -88,7 +99,6 @@ namespace application.StockManager.Application.Service
             OperationCompletedResponseDto operationCompleted = new()
             {
                 message = "Produto deletado com sucesso!.",
-                statusCode = 204 
             };
 
             return operationCompleted;
