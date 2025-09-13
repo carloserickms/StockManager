@@ -1,0 +1,80 @@
+using application.StockManager.Application.Dtos.resquests;
+using application.StockManager.Application.Interfaces;
+using domain.StockManager.Domain.Entities;
+using infrastructure.StockManager.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using ZstdSharp.Unsafe;
+
+namespace infrastructure.StockManager.Infrastructure.Repository
+{
+    public class MaterialRepository : RepositoryBase, IMaterialRepository
+    {
+        public MaterialRepository(AppDbContext context) : base(context)
+        {
+        }
+
+        public void Attach(Color color)
+        {
+            _context.Attach(color);
+        }
+
+        public async Task CreateMaterial(Material material)
+        {
+            _context.Material.Add(material);
+            await _context.SaveChangesAsync();
+        }
+
+        public Task DeleteMaterial(Material material)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<Material>> GetAllMaterialsOnTheList(List<MaterialDto> materialList)
+        {
+            try
+            {
+                if (materialList == null || materialList.Count == 0)
+                {
+                    return Enumerable.Empty<Material>();
+                }
+
+                var ids = materialList
+                    .Select(m => m.id)
+                    .Where(id => id != default)
+                    .Distinct()
+                    .ToList();
+
+                if (ids.Count == 0)
+                {
+                    return Enumerable.Empty<Material>();
+                }
+
+                var materials = await _context.Material
+                    .AsNoTracking()
+                    .Where(m => ids.Contains(m.Id))
+                    .ToListAsync();
+
+                return materials;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Operação de buscar por id não pode ser concluida", ex);
+            }
+        }
+
+        public Task<Material> GetMaterialById(Guid idMaterial)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Material>> GetMaterials()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Material> UpdateMaterial(Material material)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

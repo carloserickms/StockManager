@@ -31,6 +31,28 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             }
         }
 
+        public async Task<IEnumerable<Color>> GetAllColorsOnTheList(List<Guid> colorsList)
+        {
+            try
+            {
+                if (colorsList == null || colorsList.Count == 0)
+                {
+                    return Enumerable.Empty<Color>();
+                }
+
+                var colors = await _context.Color
+                    .AsNoTracking()
+                    .Where(c => colorsList.Contains(c.Id))
+                    .ToListAsync();
+
+                return colors;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Operação não pode ser concluida", ex);
+            }
+        }
+
         public async Task<Color> GetColorById(Guid idProduct)
         {
             try

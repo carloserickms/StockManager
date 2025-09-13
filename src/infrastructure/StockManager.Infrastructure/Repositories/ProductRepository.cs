@@ -9,6 +9,17 @@ namespace infrastructure.StockManager.Infrastructure.Repository
     {
         public ProductRepository(AppDbContext context) : base(context) { }
 
+
+        public void AttachMaterial(Material material)
+        {
+            _context.Attach(material);
+        }
+
+        public void AttachColor(Color color)
+        {
+            _context.Attach(color);
+        }
+
         public async Task CreateProduct(Product product)
         {
             try
