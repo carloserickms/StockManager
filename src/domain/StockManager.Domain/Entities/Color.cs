@@ -6,6 +6,7 @@ namespace domain.StockManager.Domain.Entities
         public string Name { get; private set; }
 
         public ICollection<Product>? Products { get; private set; } = new HashSet<Product>();
+        public ICollection<Material>? Materials { get; private set; } = new HashSet<Material>();
 
         public Color() : base() { }
 
