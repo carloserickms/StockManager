@@ -14,7 +14,7 @@ namespace StockManager.Controllers
 
         private readonly IProductService _productService;
 
-        public ProductController(ProductService productService)
+        public ProductController(IProductService productService)
         {
             _productService = productService;
         }
@@ -22,14 +22,15 @@ namespace StockManager.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateProductDto createProduct)
         {
-            var product = await _productService.CreateProduct(createProduct.ToProduct(), createProduct.MaterialIds, createProduct.ColorIds);
 
-            if (product is ProductResponseDto productCast)
+            var product = await _productService.CreateProduct(createProduct.ToProduct(), createProduct.Materials, createProduct.ColorIds);
+
+            if (product is OperationNotCompletedResponseDto productCast)
             {
-                return ApiResponse.Created(productCast, product.statusCode);
+                return productCast.statusCode == 400 ? ApiResponse.Fail(productCast.message, productCast.statusCode) : ApiResponse.NotFound(productCast.message, productCast.statusCode);
             }
 
-            return ApiResponse.Fail(product.message, product.statusCode);
+            return ApiResponse.Created(product.message, 201);
         }
 
         [HttpDelete]
@@ -42,12 +43,12 @@ namespace StockManager.Controllers
 
             var result = await _productService.DeleteProduct(actionUser);
 
-            if (result is OperationCompletedResponseDto resultCast)
+            if (result is OperationNotCompletedResponseDto resultCast)
             {
-                return ApiResponse.Success(resultCast.message, resultCast.statusCode);
+                return resultCast.statusCode == 400 ? ApiResponse.Fail(resultCast.message, resultCast.statusCode) : ApiResponse.NotFound(resultCast.message, resultCast.statusCode);
             }
 
-            return ApiResponse.NotFound(result.message, result.statusCode);
+            return ApiResponse.Created(result.message, 201);
         }
     }
 }
