@@ -13,6 +13,8 @@ namespace application.StockManager.Application.Service
         private readonly IColorRepository _colorRepository;
         private readonly IMaterialRepository _materialRepository;
 
+
+
         public ProductService(IProductRepository productRepository, IColorRepository colorRepository, IMaterialRepository materialRepository)
         {
             _productRepository = productRepository;
@@ -21,9 +23,8 @@ namespace application.StockManager.Application.Service
         }
 
 
-        public async Task<ResultResponseBase> CreateProduct(Product product, List<MaterialDto>? materials, List<Guid>? colorIds)
+        public async Task<ResultResponseBase> CreateProduct(Product product, List<MaterialDto>? materials, List<int>? colorIds)
         {
-
             if (product.UrlImage != null)
             {
                 if (!RegexUtils.IsValidImageUrl(product.UrlImage!))
@@ -38,7 +39,7 @@ namespace application.StockManager.Application.Service
                 }
             }
 
-            if (!materials.Any())
+            if (materials == null || !materials.Any())
             {
                 OperationNotCompletedResponseDto notCompletedResponse = new()
                 {
@@ -49,17 +50,8 @@ namespace application.StockManager.Application.Service
                 return notCompletedResponse;
             }
 
-            var materialList = await _materialRepository.GetAllMaterialsOnTheList(materials);
-
-            foreach (var materialItem in materialList)
-            {
-                _productRepository.AttachMaterial(materialItem);
-                product.Materials.Add(materialItem);
-            }
-
             if (colorIds != null && colorIds.Any())
             {
-
                 var colorList = await _colorRepository.GetAllColorsOnTheList(colorIds);
 
                 foreach (var colorItem in colorList)
@@ -69,11 +61,55 @@ namespace application.StockManager.Application.Service
                 }
             }
 
+            var materialList = await _materialRepository.GetAllMaterialsOnTheList(materials);
+
+            if (!materialList.Any() || !materials.Any())
+            {
+                OperationNotCompletedResponseDto operationNotCompleted = new()
+                {
+                    message = "Nenhum material pode ser associado.",
+                    statusCode = 400
+                };
+
+                return operationNotCompleted;
+            }
+
+            double maxProdruct = ProductionCalculator.CheckAvailableQuantity(product, materialList, materials);
+
+            product.UpdateAmount(maxProdruct);
+
+            if (maxProdruct < 1)
+            {
+                OperationNotCompletedResponseDto operationNotCompleted = new()
+                {
+                    message = "Quantidade de material não é suficiente.",
+                    statusCode = 400
+                };
+
+                return operationNotCompleted;
+            }
+
+            foreach (var materialListItem in materialList)
+            {
+                foreach (var materialsRequeridItem in materials)
+                {
+                    if (materialListItem.Id == materialsRequeridItem.id)
+                    {
+                        materialListItem.ReduceAmount(materialsRequeridItem.amount * maxProdruct);
+
+                        product.Materials.Add(materialListItem);
+
+                        _productRepository.AttachMaterial(materialListItem);
+                        await _materialRepository.UpdateMaterial(materialListItem);
+                    }
+                }
+            }
+
             await _productRepository.CreateProduct(product);
 
             OperationCompletedResponseDto operationCompleted = new()
             {
-                message = "Produto criado com sucesso!",
+                message = $"Produto criado com sucesso!",
             };
 
             return operationCompleted;
