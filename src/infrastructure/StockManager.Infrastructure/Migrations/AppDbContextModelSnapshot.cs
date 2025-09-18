@@ -24,11 +24,11 @@ namespace StockManager.Infrastructure.Migrations
 
             modelBuilder.Entity("ColorMaterial", b =>
                 {
-                    b.Property<Guid>("ColorsId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("ColorsId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("MaterialsId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MaterialsId")
+                        .HasColumnType("int");
 
                     b.HasKey("ColorsId", "MaterialsId");
 
@@ -39,11 +39,11 @@ namespace StockManager.Infrastructure.Migrations
 
             modelBuilder.Entity("ColorProduct", b =>
                 {
-                    b.Property<Guid>("ColorsId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("ColorsId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("ProductsId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
 
                     b.HasKey("ColorsId", "ProductsId");
 
@@ -54,11 +54,11 @@ namespace StockManager.Infrastructure.Migrations
 
             modelBuilder.Entity("MaterialProduct", b =>
                 {
-                    b.Property<Guid>("MaterialsId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MaterialsId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("ProductsId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
 
                     b.HasKey("MaterialsId", "ProductsId");
 
@@ -69,9 +69,11 @@ namespace StockManager.Infrastructure.Migrations
 
             modelBuilder.Entity("domain.StockManager.Domain.Entities.Color", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -84,9 +86,11 @@ namespace StockManager.Infrastructure.Migrations
 
             modelBuilder.Entity("domain.StockManager.Domain.Entities.Material", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<double>("Amount")
                         .HasColumnType("double");
@@ -111,9 +115,11 @@ namespace StockManager.Infrastructure.Migrations
 
             modelBuilder.Entity("domain.StockManager.Domain.Entities.Product", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<double>("Amount")
                         .HasColumnType("double");

@@ -4,7 +4,7 @@ namespace application.StockManager.Application.responses
 {
     public class ColorResponseDto
     {
-        public Guid id { get; set; }
+        public int id { get; set; }
         public string name { get; set; }
     }
 }

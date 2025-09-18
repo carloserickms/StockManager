@@ -8,8 +8,8 @@ namespace application.StockManager.Application.Interfaces
         Task CreateMaterial(Material product);
         Task<IEnumerable<Material>> GetMaterials();
         Task<IEnumerable<Material>> GetAllMaterialsOnTheList(List<MaterialDto> materialList);
-        Task<Material> GetMaterialById(Guid idProduct);
-        Task<Material> UpdateMaterial(Material product);
+        Task<Material> GetMaterialById(int idProduct);
+        Task UpdateMaterial(Material product);
         Task DeleteMaterial(Material product);
         public void Attach(Color color);
     }

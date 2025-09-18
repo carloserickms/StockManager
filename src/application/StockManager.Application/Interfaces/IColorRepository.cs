@@ -6,8 +6,8 @@ namespace application.StockManager.Application.Interfaces
     {
         Task CreateColor(Color product);
         Task<IEnumerable<Color>> GetColor();
-        Task<IEnumerable<Color>> GetAllColorsOnTheList(List<Guid> colors);
-        Task<Color> GetColorById(Guid idProduct);
+        Task<IEnumerable<Color>> GetAllColorsOnTheList(List<int> colors);
+        Task<Color> GetColorById(int idProduct);
         Task<Color> UpdateColor(Color product);
         Task<Color> DeleteColor(Color product);
     }

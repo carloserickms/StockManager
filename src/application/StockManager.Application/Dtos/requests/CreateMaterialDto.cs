@@ -7,7 +7,7 @@ namespace application.StockManager.Application.Dtos.resquests
         public string name { get; set; }
         public double amount { get; set; }
         public decimal value { get; set; }
-        public List<Guid>? ColorIds { get; set; }
+        public List<int>? ColorIds { get; set; }
 
 
         public Material ToMaterial()

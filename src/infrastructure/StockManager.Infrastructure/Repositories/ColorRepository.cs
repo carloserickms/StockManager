@@ -31,7 +31,7 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             }
         }
 
-        public async Task<IEnumerable<Color>> GetAllColorsOnTheList(List<Guid> colorsList)
+        public async Task<IEnumerable<Color>> GetAllColorsOnTheList(List<int> colorsList)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             }
         }
 
-        public async Task<Color> GetColorById(Guid idProduct)
+        public async Task<Color> GetColorById(int idProduct)
         {
             try
             {

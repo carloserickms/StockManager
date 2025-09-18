@@ -34,7 +34,7 @@ namespace StockManager.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] Guid productId)
+        public async Task<IActionResult> Delete([FromQuery] int productId)
         {
             ActionUserDto actionUser = new()
             {

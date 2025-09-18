@@ -10,7 +10,7 @@ namespace application.StockManager.Application.Dtos.resquests
         public string? urlImage { get; set; }
         public double discount { get; set; }
         public List<MaterialDto> Materials { get; set; }
-        public List<Guid>? ColorIds { get; set; }
+        public List<int>? ColorIds { get; set; }
 
         public Product ToProduct()
         {

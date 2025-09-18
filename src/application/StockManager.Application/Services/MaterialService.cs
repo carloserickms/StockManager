@@ -18,7 +18,7 @@ public class MaterialService : IMaterialSerivice
         _colorRepository = colorRepository;
     }
 
-    public async Task<ResultResponseBase> CreateMaterial(Material material, List<Guid> colorIds)
+    public async Task<ResultResponseBase> CreateMaterial(Material material, List<int> colorIds)
     {
 
         if (colorIds != null && colorIds.Any())

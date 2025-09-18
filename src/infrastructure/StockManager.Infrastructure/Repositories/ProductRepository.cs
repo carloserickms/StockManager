@@ -51,7 +51,7 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             throw new NotImplementedException();
         }
 
-        public async Task<Product> GetProductById(Guid idProduct)
+        public async Task<Product> GetProductById(int idProduct)
         {
             try
             {

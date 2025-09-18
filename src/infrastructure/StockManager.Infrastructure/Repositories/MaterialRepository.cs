@@ -62,7 +62,7 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             }
         }
 
-        public Task<Material> GetMaterialById(Guid idMaterial)
+        public Task<Material> GetMaterialById(int idMaterial)
         {
             throw new NotImplementedException();
         }
@@ -72,9 +72,10 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             throw new NotImplementedException();
         }
 
-        public Task<Material> UpdateMaterial(Material material)
+        public async Task UpdateMaterial(Material material)
         {
-            throw new NotImplementedException();
+            _context.Material.Update(material);
+            await _context.SaveChangesAsync();
         }
     }
 }

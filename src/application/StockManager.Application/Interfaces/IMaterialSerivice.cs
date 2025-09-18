@@ -6,7 +6,7 @@ namespace application.StockManager.Application.Interfaces
 {
     public interface IMaterialSerivice
     {
-        public Task<ResultResponseBase> CreateMaterial(Material product, List<Guid>? colorIds);
+        public Task<ResultResponseBase> CreateMaterial(Material product, List<int>? colorIds);
         public Task<ResultResponseBase> DeleteMaterial(ActionUserDto actionUser);
     }
 }

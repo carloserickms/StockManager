@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace domain.StockManager.Domain.Entities
 {
@@ -6,8 +7,8 @@ namespace domain.StockManager.Domain.Entities
     {
 
         [Key]
-        [Required]
-        public Guid Id { get; private set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; private set; }
 
         [Required]
         public DateTime CreatedAt { get; private set; }
@@ -17,7 +18,6 @@ namespace domain.StockManager.Domain.Entities
 
         protected BaseModelAudit()
         {
-            Id = Guid.NewGuid();
             CreatedAt = DateTime.Now;
             UpdatedAt = DateTime.Now;
         }
