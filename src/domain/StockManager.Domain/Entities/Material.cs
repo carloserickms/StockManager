@@ -30,15 +30,39 @@ namespace domain.StockManager.Domain.Entities
             SetUpdated();
         }
 
-        public void UpdateAmount(double amount)
+        public void ReduceAmount(double amount)
         {
             if (amount < 0)
             {
                 throw new ArgumentException("Não é possível informar valores negativos.");
             }
 
-            Amount = amount;
+            Amount -= amount;
             SetUpdated();
+        }
+
+        public double GetMaxProductionByMaterial(double amountMaterial, double amountProduct)
+        {
+            if (amountProduct <= 0)
+                throw new ArgumentException("O consumo de material por produto deve ser maior que zero.");
+            if (amountProduct < 0)
+                throw new ArgumentException("Quantidade de produtos não pode ser negativa.");
+
+            double totalMaterial = amountMaterial * amountProduct;
+
+            if (Amount < totalMaterial)
+            {
+                double maxProdruct = Amount / amountMaterial;
+
+                if (maxProdruct < 1)
+                {
+                    maxProdruct = 0;
+                }
+
+                return maxProdruct;
+            }
+
+            return amountProduct;
         }
 
         public void UpdateValue(decimal value)
