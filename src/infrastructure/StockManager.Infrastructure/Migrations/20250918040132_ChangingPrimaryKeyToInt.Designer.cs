@@ -12,8 +12,8 @@ using infrastructure.StockManager.Infrastructure.Persistence;
 namespace StockManager.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250907065500_UpdateFilds")]
-    partial class UpdateFilds
+    [Migration("20250918040132_ChangingPrimaryKeyToInt")]
+    partial class ChangingPrimaryKeyToInt
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,13 +25,28 @@ namespace StockManager.Infrastructure.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("ColorMaterial", b =>
+                {
+                    b.Property<int>("ColorsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaterialsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ColorsId", "MaterialsId");
+
+                    b.HasIndex("MaterialsId");
+
+                    b.ToTable("ColorMaterial");
+                });
+
             modelBuilder.Entity("ColorProduct", b =>
                 {
-                    b.Property<Guid>("ColorsId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("ColorsId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("ProductsId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
 
                     b.HasKey("ColorsId", "ProductsId");
 
@@ -42,11 +57,11 @@ namespace StockManager.Infrastructure.Migrations
 
             modelBuilder.Entity("MaterialProduct", b =>
                 {
-                    b.Property<Guid>("MaterialsId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("MaterialsId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("ProductsId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
 
                     b.HasKey("MaterialsId", "ProductsId");
 
@@ -57,9 +72,11 @@ namespace StockManager.Infrastructure.Migrations
 
             modelBuilder.Entity("domain.StockManager.Domain.Entities.Color", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -72,9 +89,11 @@ namespace StockManager.Infrastructure.Migrations
 
             modelBuilder.Entity("domain.StockManager.Domain.Entities.Material", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<double>("Amount")
                         .HasColumnType("double");
@@ -99,9 +118,11 @@ namespace StockManager.Infrastructure.Migrations
 
             modelBuilder.Entity("domain.StockManager.Domain.Entities.Product", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<double>("Amount")
                         .HasColumnType("double");
@@ -128,6 +149,21 @@ namespace StockManager.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("ColorMaterial", b =>
+                {
+                    b.HasOne("domain.StockManager.Domain.Entities.Color", null)
+                        .WithMany()
+                        .HasForeignKey("ColorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("domain.StockManager.Domain.Entities.Material", null)
+                        .WithMany()
+                        .HasForeignKey("MaterialsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ColorProduct", b =>
