@@ -20,14 +20,22 @@ namespace StockManager.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateMaterialDto createMaterial)
         {
-            var material = await _materialSerivice.CreateMaterial(createMaterial.ToMaterial(), createMaterial.ColorIds);
+            var resultMaterial = await _materialSerivice.CreateMaterial(createMaterial.ToMaterial(), createMaterial.ColorIds);
 
-            if (material is OperationNotCompletedResponseDto materialCast)
+            if (resultMaterial.IsSuccess == false)
             {
-                return materialCast.statusCode == 400 ? ApiResponse.Fail(materialCast.message, materialCast.statusCode) : ApiResponse.NotFound(materialCast.message, materialCast.statusCode);
+                ApiResponse.Fail(resultMaterial.Message, 400);
             }
 
-            return ApiResponse.Created(material.message, 201);
+            return ApiResponse.Created(resultMaterial.Message, 201);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var resultMaterial = await _materialSerivice.GetAllMaterial();
+
+            return ApiResponse.Success(resultMaterial, 200);
         }
     }
 }

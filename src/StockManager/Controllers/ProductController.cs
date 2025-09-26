@@ -23,32 +23,17 @@ namespace StockManager.Controllers
         public async Task<IActionResult> Post([FromBody] CreateProductDto createProduct)
         {
 
-            var product = await _productService.CreateProduct(createProduct.ToProduct(), createProduct.Materials, createProduct.ColorIds);
+            var resultProduct = await _productService.CreateProduct(createProduct.ToProduct(), createProduct.Materials, createProduct.ColorIds);
 
-            if (product is OperationNotCompletedResponseDto productCast)
+
+            Console.WriteLine($">>>>>>>>>>>>>>> {resultProduct.IsSuccess}");
+
+            if (resultProduct.IsSuccess == false)
             {
-                return productCast.statusCode == 400 ? ApiResponse.Fail(productCast.message, productCast.statusCode) : ApiResponse.NotFound(productCast.message, productCast.statusCode);
+                return ApiResponse.Fail(resultProduct.Message, 400);
             }
 
-            return ApiResponse.Created(product.message, 201);
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery] int productId)
-        {
-            ActionUserDto actionUser = new()
-            {
-                productId = productId
-            };
-
-            var result = await _productService.DeleteProduct(actionUser);
-
-            if (result is OperationNotCompletedResponseDto resultCast)
-            {
-                return resultCast.statusCode == 400 ? ApiResponse.Fail(resultCast.message, resultCast.statusCode) : ApiResponse.NotFound(resultCast.message, resultCast.statusCode);
-            }
-
-            return ApiResponse.Created(result.message, 201);
+            return ApiResponse.Created(resultProduct.Message, 201);
         }
     }
 }

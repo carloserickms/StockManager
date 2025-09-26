@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+
 namespace domain.StockManager.Domain.Entities
 {
     public class Material : BaseModelAudit
@@ -32,16 +34,26 @@ namespace domain.StockManager.Domain.Entities
 
         public void ReduceAmount(double amount)
         {
-            if (amount < 0)
+            if (!CheckAmoutInputAmout(amount))
             {
-                throw new ArgumentException("Não é possível informar valores negativos.");
+                throw new ArgumentException($"Não é possível informar valores negativos.");
             }
 
             Amount -= amount;
             SetUpdated();
         }
 
-        public double GetMaxProductionByMaterial(double amountMaterial, double amountProduct)
+        public bool CheckAmoutInputAmout(double amount)
+        {
+            if (amount <= 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool CheckAvailableQuantity(double amountMaterial, double amountProduct)
         {
             if (amountProduct <= 0)
                 throw new ArgumentException("O consumo de material por produto deve ser maior que zero.");
@@ -52,17 +64,10 @@ namespace domain.StockManager.Domain.Entities
 
             if (Amount < totalMaterial)
             {
-                double maxProdruct = Amount / amountMaterial;
-
-                if (maxProdruct < 1)
-                {
-                    maxProdruct = 0;
-                }
-
-                return maxProdruct;
+                return false;
             }
 
-            return amountProduct;
+            return true;
         }
 
         public void UpdateValue(decimal value)
@@ -74,6 +79,11 @@ namespace domain.StockManager.Domain.Entities
 
             Value = value;
             SetUpdated();
+        }
+
+        public void AddInColorList(Color color)
+        {
+            Colors?.Add(color);
         }
     }
 }

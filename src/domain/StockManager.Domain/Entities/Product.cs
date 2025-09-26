@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using shared.StockManager.Shered;
 
 namespace domain.StockManager.Domain.Entities
@@ -10,7 +11,7 @@ namespace domain.StockManager.Domain.Entities
         public string? UrlImage { get; private set; }
         public double Discount { get; private set; }
 
-        public ICollection<Material>? Materials { get; private set; } = new HashSet<Material>();
+        public ICollection<Material> Materials { get; private set; } = new HashSet<Material>();
         public ICollection<Color>? Colors { get; private set; } = new HashSet<Color>();
 
         public Product(string name, decimal value, double amount, string urlImage, double discount) : base()
@@ -49,7 +50,7 @@ namespace domain.StockManager.Domain.Entities
         {
             if (amount < 0)
             {
-                throw new ArgumentException("Não é possível informar valores negativos.");
+                throw new ArgumentException($"Não é possível informar valores negativos. {amount}");
             }
 
             Amount = amount;
@@ -65,6 +66,33 @@ namespace domain.StockManager.Domain.Entities
 
             Discount = discount;
             SetUpdated();
+        }
+
+        public void AddInMaterialList(Material material)
+        {
+            if (material != null)
+            {
+                Console.WriteLine(material.Name);
+                Materials.Add(material);
+            }
+        }
+
+        public void AddInColorList(Color color)
+        {
+            Colors?.Add(color);
+        }
+
+        public bool IsValidImageUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return false;
+            }
+
+            // Regex: começa com https:// e termina com .jpg ou .png
+            string pattern = @"^https:\/\/.+\.(jpg|png)$";
+
+            return Regex.IsMatch(url, pattern, RegexOptions.IgnoreCase);
         }
     }
 }

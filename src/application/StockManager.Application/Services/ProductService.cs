@@ -13,8 +13,6 @@ namespace application.StockManager.Application.Service
         private readonly IColorRepository _colorRepository;
         private readonly IMaterialRepository _materialRepository;
 
-
-
         public ProductService(IProductRepository productRepository, IColorRepository colorRepository, IMaterialRepository materialRepository)
         {
             _productRepository = productRepository;
@@ -23,121 +21,72 @@ namespace application.StockManager.Application.Service
         }
 
 
-        public async Task<ResultResponseBase> CreateProduct(Product product, List<MaterialDto>? materials, List<int>? colorIds)
+        public async Task<Result<Product>> CreateProduct(Product product, List<MaterialDto>? materials, List<int>? colorIds)
         {
-            if (product.UrlImage != null)
+            if (!product.IsValidImageUrl(product.UrlImage))
             {
-                if (!RegexUtils.IsValidImageUrl(product.UrlImage!))
-                {
-                    OperationNotCompletedResponseDto notCompletedResponse = new()
-                    {
-                        message = "Url da imagem não é compativel com o formato, verifique se a url contém: https, .png ou .jpg.",
-                        statusCode = 400
-                    };
-
-                    return notCompletedResponse;
-                }
+                return Result<Product>.Failure("Url da imagem não é compatível com o formato, verifique se contém: https, .png ou .jpg.");
             }
 
             if (materials == null || !materials.Any())
             {
-                OperationNotCompletedResponseDto notCompletedResponse = new()
-                {
-                    message = "É necessário associar um ou mais materiais para criar um produto.",
-                    statusCode = 400
-                };
-
-                return notCompletedResponse;
+                return Result<Product>.Failure("Lista de materias esta vazia");
             }
 
-            if (colorIds != null && colorIds.Any())
+            if (colorIds == null || !colorIds.Any())
             {
-                var colorList = await _colorRepository.GetAllColorsOnTheList(colorIds);
-
-                foreach (var colorItem in colorList)
-                {
-                    _productRepository.AttachColor(colorItem);
-                    product.Colors.Add(colorItem);
-                }
+                return Result<Product>.Failure("Lista de cores está vazia");
             }
 
             var materialList = await _materialRepository.GetAllMaterialsOnTheList(materials);
 
-            if (!materialList.Any() || !materials.Any())
+            if (materialList == null || !materialList.Any())
             {
-                OperationNotCompletedResponseDto operationNotCompleted = new()
-                {
-                    message = "Nenhum material pode ser associado.",
-                    statusCode = 400
-                };
-
-                return operationNotCompleted;
+                return Result<Product>.Failure("Não foi possivel encontrar os materiais inseridos.");
             }
 
-            double maxProdruct = ProductionCalculator.CheckAvailableQuantity(product, materialList, materials);
+            var checkProductCreation = ProductionCalculator.CheckAvailableQuantity(product, materialList, materials);
 
-            product.UpdateAmount(maxProdruct);
-
-            if (maxProdruct < 1)
+            if (!checkProductCreation)
             {
-                OperationNotCompletedResponseDto operationNotCompleted = new()
-                {
-                    message = "Quantidade de material não é suficiente.",
-                    statusCode = 400
-                };
-
-                return operationNotCompleted;
+                return Result<Product>.Failure($"Quantidade de materiais em estoque não é suficiente.");
             }
 
-            foreach (var materialListItem in materialList)
+            foreach (var materialItem in materialList)
             {
-                foreach (var materialsRequeridItem in materials)
+                foreach (var materialRequiredItem in materials)
                 {
-                    if (materialListItem.Id == materialsRequeridItem.id)
+                    if (materialItem.Id == materialRequiredItem.id)
                     {
-                        materialListItem.ReduceAmount(materialsRequeridItem.amount * maxProdruct);
+                        materialItem.ReduceAmount(materialRequiredItem.amount * product.Amount);
 
-                        product.Materials.Add(materialListItem);
+                        product.AddInMaterialList(materialItem);
 
-                        _productRepository.AttachMaterial(materialListItem);
-                        await _materialRepository.UpdateMaterial(materialListItem);
+                        _productRepository.AttachMaterial(materialItem);
+                        await _materialRepository.UpdateMaterial(materialItem);
                     }
+                }
+            }
+
+            var colorList = await _colorRepository.GetAllColorsOnTheList(colorIds);
+
+            if (colorList != null)
+            {
+                foreach (var colorItem in colorList)
+                {
+                    _productRepository.AttachColor(colorItem);
+                    product.AddInColorList(colorItem);
                 }
             }
 
             await _productRepository.CreateProduct(product);
 
-            OperationCompletedResponseDto operationCompleted = new()
-            {
-                message = $"Produto criado com sucesso!",
-            };
-
-            return operationCompleted;
+            return Result<Product>.Created("Produto criado com sucesso.");
         }
 
-        public async Task<ResultResponseBase> DeleteProduct(ActionUserDto actionUser)
+        public Task<Result<Product>> DeleteProduct(ActionUserDto actionUser)
         {
-            var product = await _productRepository.GetProductById(actionUser.productId);
-
-            if (product == null)
-            {
-                OperationNotCompletedResponseDto notCompletedResponse = new()
-                {
-                    message = "Não foi possível encontrar o produto.",
-                    statusCode = 404
-                };
-
-                return notCompletedResponse;
-            }
-
-            await _productRepository.DeleteProduct(product);
-
-            OperationCompletedResponseDto operationCompleted = new()
-            {
-                message = "Produto deletado com sucesso!.",
-            };
-
-            return operationCompleted;
+            throw new NotImplementedException();
         }
     }
 }

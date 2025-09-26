@@ -67,9 +67,9 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Material>> GetMaterials()
+        public async Task<IEnumerable<Material>> GetMaterials()
         {
-            throw new NotImplementedException();
+            return await _context.Material.ToListAsync();
         }
 
         public async Task UpdateMaterial(Material material)
