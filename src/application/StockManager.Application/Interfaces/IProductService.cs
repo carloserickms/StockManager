@@ -1,12 +1,12 @@
-using application.StockManager.Application.Dtos;
 using application.StockManager.Application.Dtos.resquests;
+using application.StockManager.Application.responses;
 using domain.StockManager.Domain.Entities;
 
 namespace application.StockManager.Application.Interfaces
 {
     public interface IProductService
     {
-        public Task<ResultResponseBase> CreateProduct(Product product, List<MaterialDto>? materialIds, List<int>? colorIds);
-        public Task<ResultResponseBase> DeleteProduct(ActionUserDto actionUser);
+        public Task<Result<Product>> CreateProduct(Product product, List<MaterialDto>? materialIds, List<int>? colorIds);
+        public Task<Result<Product>> DeleteProduct(ActionUserDto actionUser);
     }
 }

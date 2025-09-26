@@ -6,10 +6,8 @@ namespace application.StockManager.Application.Service
     public static class ProductionCalculator
     {
 
-        public static double CheckAvailableQuantity(Product product, IEnumerable<Material> materials, List<MaterialDto> materialRequired)
+        public static bool CheckAvailableQuantity(Product product, IEnumerable<Material> materials, List<MaterialDto> materialRequired)
         {
-
-            double maximumProductionProducts = product.Amount;
 
             foreach (var materialsItem in materials)
             {
@@ -17,17 +15,20 @@ namespace application.StockManager.Application.Service
                 {
                     if (materialsItem.Id == materialRequiredItem.id)
                     {
-                        double maxProdruct = materialsItem.GetMaxProductionByMaterial(materialRequiredItem.amount, product.Amount);
-
-                        if (maxProdruct < maximumProductionProducts)
+                        if (materialRequiredItem.amount <= 0)
                         {
-                            maximumProductionProducts = maxProdruct;
+                            return false;
+                        }
+
+                        if (!materialsItem.CheckAvailableQuantity(materialRequiredItem.amount, product.Amount))
+                        {
+                            return false;
                         }
                     }
                 }
             }
 
-            return maximumProductionProducts;
+            return true;
         }
     }
 }

@@ -18,35 +18,43 @@ public class MaterialService : IMaterialSerivice
         _colorRepository = colorRepository;
     }
 
-    public async Task<ResultResponseBase> CreateMaterial(Material material, List<int> colorIds)
+    public async Task<Result<Material>> CreateMaterial(Material material, List<int> colorIds)
     {
 
-        if (colorIds != null && colorIds.Any())
+        if (colorIds == null || !colorIds.Any())
         {
-            var colors = await _colorRepository.GetAllColorsOnTheList(colorIds);
+            return Result<Material>.Failure("Lista de cores está vazia");
+        }
 
-            if (colors != null)
+        if (!material.CheckAmoutInputAmout(material.Amount))
+        {
+            return Result<Material>.Failure("A Quantidade do material não pode ser menor ou igual a zero.");
+        }
+
+        var colors = await _colorRepository.GetAllColorsOnTheList(colorIds);
+
+        if (colors != null)
+        {
+            foreach (var colorsitem in colors)
             {
-                foreach (var colorsitem in colors)
-                {
-                    _materialRepository.Attach(colorsitem);
-                    material.Colors.Add(colorsitem);
-                }
+                _materialRepository.Attach(colorsitem);
+                material.AddInColorList(colorsitem);
             }
         }
 
         await _materialRepository.CreateMaterial(material);
 
-        OperationCompletedResponseDto operationCompleted = new()
-        {
-            message = "Material foi criado com sucesso."
-        };
-
-        return operationCompleted;
+        return Result<Material>.Created("Material criado com sucesso.");
     }
 
-    public Task<ResultResponseBase> DeleteMaterial(ActionUserDto actionUser)
+    public Task<Result<Material>> DeleteMaterial(ActionUserDto actionUser)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<Result<IEnumerable<Material>>> GetAllMaterial()
+    {
+        var materiais = await _materialRepository.GetMaterials();
+        return Result<IEnumerable<Material>>.Success(materiais);
     }
 }
