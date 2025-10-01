@@ -5,12 +5,11 @@ namespace application.StockManager.Application.Interfaces
 {
     public interface IMaterialRepository
     {
-        Task CreateMaterial(Material product);
+        Task SaveMaterial(Material product);
         Task<IEnumerable<Material>> GetMaterials();
         Task<IEnumerable<Material>> GetAllMaterialsOnTheList(List<MaterialDto> materialList);
         Task<Material> GetMaterialById(int idProduct);
         Task UpdateMaterial(Material product);
         Task DeleteMaterial(Material product);
-        public void Attach(Color color);
     }
 }

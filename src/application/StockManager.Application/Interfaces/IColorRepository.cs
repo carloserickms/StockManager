@@ -4,7 +4,7 @@ namespace application.StockManager.Application.Interfaces
 {
     public interface IColorRepository
     {
-        Task CreateColor(Color product);
+        Task SaveColor(Color product);
         Task<IEnumerable<Color>> GetColor();
         Task<IEnumerable<Color>> GetAllColorsOnTheList(List<int> colors);
         Task<Color> GetColorById(int idProduct);
