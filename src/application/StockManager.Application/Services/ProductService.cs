@@ -1,9 +1,9 @@
-using application.StockManager.Application.Dtos;
 using application.StockManager.Application.Dtos.resquests;
 using application.StockManager.Application.Interfaces;
-using application.StockManager.Application.responses;
 using domain.StockManager.Domain.Entities;
-using shared.StockManager.Shered;
+using domain.StockManager.Domain.Entities.ValueObjects;
+using Domain.StockManager.Domain.Exceptions;
+using shared.StockManager.Shered.Utils;
 
 namespace application.StockManager.Application.Service
 {
@@ -21,13 +21,8 @@ namespace application.StockManager.Application.Service
         }
 
 
-        public async Task<Result<Product>> CreateProduct(Product product, List<MaterialDto>? materials, List<int>? colorIds)
+        public async Task<Result<Product>> CreateProduct(CreateProductDto product, List<MaterialDto>? materials, List<int>? colorIds)
         {
-            if (!product.IsValidImageUrl(product.UrlImage))
-            {
-                return Result<Product>.Failure("Url da imagem não é compatível com o formato, verifique se contém: https, .png ou .jpg.");
-            }
-
             if (materials == null || !materials.Any())
             {
                 return Result<Product>.Failure("Lista de materias esta vazia");
@@ -45,41 +40,38 @@ namespace application.StockManager.Application.Service
                 return Result<Product>.Failure("Não foi possivel encontrar os materiais inseridos.");
             }
 
-            var checkProductCreation = ProductionCalculator.CheckAvailableQuantity(product, materialList, materials);
+            var colorsList = await _colorRepository.GetAllColorsOnTheList(colorIds);
 
-            if (!checkProductCreation)
+            if (colorsList == null || !colorsList.Any())
             {
-                return Result<Product>.Failure($"Quantidade de materiais em estoque não é suficiente.");
+                return Result<Product>.Failure("Não foi possivel encontrar as cores inseridas.");
             }
 
-            foreach (var materialItem in materialList)
+            List<MaterialRequirement> materialRequirements = new();
+
+            foreach (var materialListItem in materials)
             {
-                foreach (var materialRequiredItem in materials)
-                {
-                    if (materialItem.Id == materialRequiredItem.id)
-                    {
-                        materialItem.ReduceAmount(materialRequiredItem.amount * product.Amount);
+                var material = new MaterialRequirement(materialListItem.id, materialListItem.amount);
+                materialRequirements.Add(material);
+            }
 
-                        product.AddInMaterialList(materialItem);
+            var productInfo = new ProductInfo(product.name, product.value, product.amount, product.urlImage, product.discount);
 
-                        _productRepository.AttachMaterial(materialItem);
-                        await _materialRepository.UpdateMaterial(materialItem);
-                    }
+            try
+            {
+                var newProduct = Product.Create(productInfo, materialList, colorsList, materialRequirements);
+
+                foreach (var material in materialList)
+                {                    
+                    await _materialRepository.UpdateMaterial(material);
                 }
+
+                await _productRepository.SaveProduct(newProduct);
             }
-
-            var colorList = await _colorRepository.GetAllColorsOnTheList(colorIds);
-
-            if (colorList != null)
+            catch (BusinessException ex)
             {
-                foreach (var colorItem in colorList)
-                {
-                    _productRepository.AttachColor(colorItem);
-                    product.AddInColorList(colorItem);
-                }
+                return Result<Product>.Failure(ex.Message);
             }
-
-            await _productRepository.CreateProduct(product);
 
             return Result<Product>.Created("Produto criado com sucesso.");
         }

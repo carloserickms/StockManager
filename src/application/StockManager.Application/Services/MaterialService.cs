@@ -3,6 +3,7 @@ using application.StockManager.Application.Dtos.resquests;
 using application.StockManager.Application.Interfaces;
 using application.StockManager.Application.responses;
 using domain.StockManager.Domain.Entities;
+using shared.StockManager.Shered.Utils;
 
 namespace application.StockManager.Application.Service;
 
@@ -37,12 +38,11 @@ public class MaterialService : IMaterialSerivice
         {
             foreach (var colorsitem in colors)
             {
-                _materialRepository.Attach(colorsitem);
                 material.AddInColorList(colorsitem);
             }
         }
 
-        await _materialRepository.CreateMaterial(material);
+        await _materialRepository.SaveMaterial(material);
 
         return Result<Material>.Created("Material criado com sucesso.");
     }
