@@ -2,6 +2,7 @@ using application.StockManager.Application.Dtos;
 using application.StockManager.Application.Dtos.resquests;
 using application.StockManager.Application.responses;
 using domain.StockManager.Domain.Entities;
+using shared.StockManager.Shered.Utils;
 
 namespace application.StockManager.Application.Interfaces
 {

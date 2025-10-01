@@ -4,12 +4,10 @@ namespace application.StockManager.Application.Interfaces
 {
     public interface IProductRepository
     {
-        Task CreateProduct(Product product);
+        Task SaveProduct(Product product);
         Task<IEnumerable<Product>> GetProduct();
         Task<Product> GetProductById(int idProduct);
         Task<Product> UpdateProduct(Product product);
         Task DeleteProduct(Product product);
-        public void AttachMaterial(Material material);
-        public void AttachColor(Color color);
     }
 }
