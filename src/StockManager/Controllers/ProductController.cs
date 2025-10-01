@@ -23,7 +23,7 @@ namespace StockManager.Controllers
         public async Task<IActionResult> Post([FromBody] CreateProductDto createProduct)
         {
 
-            var resultProduct = await _productService.CreateProduct(createProduct.ToProduct(), createProduct.Materials, createProduct.ColorIds);
+            var resultProduct = await _productService.CreateProduct(createProduct, createProduct.Materials, createProduct.ColorIds);
 
 
             Console.WriteLine($">>>>>>>>>>>>>>> {resultProduct.IsSuccess}");

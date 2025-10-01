@@ -1,4 +1,7 @@
 using System.Text.RegularExpressions;
+using application.StockManager.Application.Service;
+using domain.StockManager.Domain.Entities.ValueObjects;
+using Domain.StockManager.Domain.Exceptions;
 using shared.StockManager.Shered;
 
 namespace domain.StockManager.Domain.Entities
@@ -13,8 +16,9 @@ namespace domain.StockManager.Domain.Entities
 
         public ICollection<Material> Materials { get; private set; } = new HashSet<Material>();
         public ICollection<Color>? Colors { get; private set; } = new HashSet<Color>();
+        
 
-        public Product(string name, decimal value, double amount, string urlImage, double discount) : base()
+        private Product(string name, decimal value, double amount, string urlImage, double discount) : base()
         {
             Name = name;
             Value = value;
@@ -23,6 +27,43 @@ namespace domain.StockManager.Domain.Entities
             Discount = discount;
         }
 
+        public static Product Create(ProductInfo productInfo, IEnumerable<Material> materials, IEnumerable<Color> colorsList, IEnumerable<MaterialRequirement> requirements)
+        {
+
+            Product product = new(productInfo.Name, productInfo.Value, productInfo.Amount, productInfo.UrlImage, productInfo.Discount);
+
+            if (!product.IsValidImageUrl(product.UrlImage))
+            {
+                throw new BusinessException("Url inválida");
+            }
+
+            bool availableQuantity = ProductionCalculator.CheckAvailableQuantity(product, materials, requirements);
+
+            if (!availableQuantity)
+            {
+                throw new BusinessException("Não há material suficiente para criar os produtos");
+            }
+
+            foreach (var materialItem in materials)
+            {
+                foreach (var requiredItem in requirements)
+                {
+                    if (materialItem.Id == requiredItem.MaterialId)
+                    {
+                        materialItem.ReduceAmount(requiredItem.QuantityPerProduct * product.Amount);
+
+                        product.AddInMaterialList(materialItem);
+                    }
+                }
+            }
+
+            foreach (var colorItem in colorsList)
+            {
+                product.AddInColorList(colorItem);
+            }
+
+            return product;
+        }
 
         public void UpdateName(string name)
         {
