@@ -11,10 +11,5 @@ namespace application.StockManager.Application.Dtos.resquests
         public double discount { get; set; }
         public List<MaterialDto> Materials { get; set; }
         public List<int>? ColorIds { get; set; }
-
-        public Product ToProduct()
-        {
-            return new Product(name, value, amount, urlImage!, discount);
-        }
     }
 }
