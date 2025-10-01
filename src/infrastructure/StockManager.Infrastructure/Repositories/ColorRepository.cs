@@ -9,7 +9,7 @@ namespace infrastructure.StockManager.Infrastructure.Repository
     {
         public ColorRepository(AppDbContext context) : base(context) { }
 
-        public Task CreateColor(Color product)
+        public Task SaveColor(Color product)
         {
             throw new NotImplementedException();
         }

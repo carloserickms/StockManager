@@ -13,14 +13,15 @@ namespace infrastructure.StockManager.Infrastructure.Repository
         {
         }
 
-        public void Attach(Color color)
+        public async Task SaveMaterial(Material material)
         {
-            _context.Attach(color);
-        }
 
-        public async Task CreateMaterial(Material material)
-        {
-            _context.Material.Add(material);
+            foreach (var item in material.Colors)
+            {
+                _context.Attach(item);
+            }
+
+            await _context.Material.AddAsync(material);
             await _context.SaveChangesAsync();
         }
 

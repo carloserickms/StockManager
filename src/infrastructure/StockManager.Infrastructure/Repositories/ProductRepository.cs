@@ -9,27 +9,26 @@ namespace infrastructure.StockManager.Infrastructure.Repository
     {
         public ProductRepository(AppDbContext context) : base(context) { }
 
-
-        public void AttachMaterial(Material material)
-        {
-            _context.Attach(material);
-        }
-
-        public void AttachColor(Color color)
-        {
-            _context.Attach(color);
-        }
-
-        public async Task CreateProduct(Product product)
+        public async Task SaveProduct(Product product)
         {
             try
             {
+                foreach (var item in product.Materials)
+                {
+                    _context.Attach(item);
+                }
+
+                foreach (var item in product.Colors)
+                {
+                    _context.Attach(item);
+                }
+
                 await _context.Product.AddAsync(product);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception("Operação não pode ser concluida", ex);
+                throw;
             }
         }
 
@@ -40,9 +39,9 @@ namespace infrastructure.StockManager.Infrastructure.Repository
                 _context.Product.RemoveRange(product);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception("Operação de deletar não pode ser concluida", ex);
+                throw;
             }
         }
 
@@ -57,9 +56,9 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             {
                 return await _context.Product.FirstOrDefaultAsync(p => p.Id == idProduct);
             }
-            catch (Exception ex)
+            catch
             {
-                throw new Exception("Operação de buscar por id não pode ser concluida", ex);
+                throw;
             }
         }
 
