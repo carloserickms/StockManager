@@ -1,4 +1,6 @@
 using System.Reflection.Metadata;
+using domain.StockManager.Domain.Entities.ValueObjects;
+using Domain.StockManager.Domain.Exceptions;
 
 namespace domain.StockManager.Domain.Entities
 {
@@ -12,13 +14,31 @@ namespace domain.StockManager.Domain.Entities
         public ICollection<Color>? Colors { get; private set; } = new HashSet<Color>();
 
 
-        public Material() : base() { }
-
         public Material(string name, double amount, decimal value) : base()
         {
             Name = name;
             Amount = amount;
             Value = value;
+        }
+
+        public static Material Create(MaterialInfo materialInfo, IEnumerable<Color> colors)
+        {
+            Material material = new(materialInfo.Name, materialInfo.Amount, materialInfo.Value);
+
+            if (!material.CheckAmoutInputAmout(materialInfo.Amount))
+            {
+                throw new BusinessException("A quantidade não pode ser menor ou igual a 0.");
+            }
+
+            if (colors != null || !colors.Any())
+            {
+                foreach (var item in colors)
+                {
+                    material.AddInColorList(item);
+                }
+            }
+
+            return material;
         }
 
         public void UpdateName(string name)

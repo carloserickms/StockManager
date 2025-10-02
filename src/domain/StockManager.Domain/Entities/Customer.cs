@@ -8,6 +8,8 @@ namespace domain.StockManager.Domain.Entities
         public string Phone { get; private set; }
 
 
+        public ICollection<ServiceOrder> ServiceOrders { get; private set; } = new HashSet<ServiceOrder>();
+
         public Customer() : base() { }
 
         public Customer(string name, string phone) : base()

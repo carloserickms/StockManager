@@ -9,7 +9,7 @@ namespace domain.StockManager.Domain.Entities
     public class Product : BaseModelAudit
     {
         public string Name { get; private set; }
-        public decimal Value { get; private set; }
+        public int Value { get; private set; }
         public double Amount { get; private set; }
         public string? UrlImage { get; private set; }
         public double Discount { get; private set; }
@@ -17,11 +17,11 @@ namespace domain.StockManager.Domain.Entities
         public ICollection<Material> Materials { get; private set; } = new HashSet<Material>();
         public ICollection<Color>? Colors { get; private set; } = new HashSet<Color>();
         
-
-        private Product(string name, decimal value, double amount, string urlImage, double discount) : base()
+        private Product () : base () {}
+        private Product(string name, double value, double amount, string urlImage, double discount) : base()
         {
             Name = name;
-            Value = value;
+            Value = (int) value / 100;
             Amount = amount;
             UrlImage = urlImage;
             Discount = discount;
