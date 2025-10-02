@@ -9,7 +9,7 @@ namespace infrastructure.StockManager.Infrastructure.Repository
     {
         public ProductRepository(AppDbContext context) : base(context) { }
 
-        public async Task SaveProduct(Product product)
+        public async Task Save(Product product)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             }
         }
 
-        public async Task DeleteProduct(Product product)
+        public async Task Delete(Product product)
         {
             try
             {
@@ -45,12 +45,12 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             }
         }
 
-        public Task<IEnumerable<Product>> GetProduct()
+        public Task<IEnumerable<Product>> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<Product> GetProductById(int idProduct)
+        public async Task<Product> GetById(int idProduct)
         {
             try
             {

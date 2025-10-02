@@ -3,13 +3,9 @@ using domain.StockManager.Domain.Entities;
 
 namespace application.StockManager.Application.Interfaces
 {
-    public interface IMaterialRepository
+    public interface IMaterialRepository : IRepository<Material>
     {
-        Task SaveMaterial(Material product);
-        Task<IEnumerable<Material>> GetMaterials();
         Task<IEnumerable<Material>> GetAllMaterialsOnTheList(List<MaterialDto> materialList);
-        Task<Material> GetMaterialById(int idProduct);
         Task UpdateMaterial(Material product);
-        Task DeleteMaterial(Material product);
     }
 }

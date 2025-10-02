@@ -13,19 +13,22 @@ namespace infrastructure.StockManager.Infrastructure.Repository
         {
         }
 
-        public async Task SaveMaterial(Material material)
+        public async Task Save(Material material)
         {
 
-            foreach (var item in material.Colors)
+            if (material.Colors != null || !material.Colors.Any())
             {
-                _context.Attach(item);
+                foreach (var item in material.Colors)
+                {
+                    _context.Attach(item);
+                }
             }
 
             await _context.Material.AddAsync(material);
             await _context.SaveChangesAsync();
         }
 
-        public Task DeleteMaterial(Material material)
+        public Task Delete(Material material)
         {
             throw new NotImplementedException();
         }
@@ -63,12 +66,12 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             }
         }
 
-        public Task<Material> GetMaterialById(int idMaterial)
+        public Task<Material> GetById(int idMaterial)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Material>> GetMaterials()
+        public async Task<IEnumerable<Material>> GetAll()
         {
             return await _context.Material.ToListAsync();
         }

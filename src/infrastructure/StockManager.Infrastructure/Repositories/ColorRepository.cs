@@ -9,17 +9,17 @@ namespace infrastructure.StockManager.Infrastructure.Repository
     {
         public ColorRepository(AppDbContext context) : base(context) { }
 
-        public Task SaveColor(Color product)
+        public Task Save(Color product)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Color> DeleteColor(Color product)
+        public Task Delete(Color product)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Color>> GetColor()
+        public async Task<IEnumerable<Color>> GetAll()
         {
             try
             {
@@ -53,7 +53,7 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             }
         }
 
-        public async Task<Color> GetColorById(int idProduct)
+        public async Task<Color> GetById(int idProduct)
         {
             try
             {
