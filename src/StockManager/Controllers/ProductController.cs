@@ -1,7 +1,5 @@
 using application.StockManager.Application.Dtos.resquests;
 using application.StockManager.Application.Interfaces;
-using application.StockManager.Application.responses;
-using application.StockManager.Application.Service;
 using Microsoft.AspNetCore.Mvc;
 using shared.StockManager.Shered.Helper;
 
@@ -24,9 +22,6 @@ namespace StockManager.Controllers
         {
 
             var resultProduct = await _productService.CreateProduct(createProduct, createProduct.Materials, createProduct.ColorIds);
-
-
-            Console.WriteLine($">>>>>>>>>>>>>>> {resultProduct.IsSuccess}");
 
             if (resultProduct.IsSuccess == false)
             {

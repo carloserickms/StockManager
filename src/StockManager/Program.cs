@@ -37,6 +37,8 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     ColorTableSeed.Seed(context);
+    PaymentMethodSeed.Seed(context);
+    StatusSeed.Seed(context);
 }
 
 app.Run();
