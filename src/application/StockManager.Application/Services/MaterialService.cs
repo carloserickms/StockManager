@@ -1,8 +1,7 @@
-using application.StockManager.Application.Dtos;
 using application.StockManager.Application.Dtos.resquests;
 using application.StockManager.Application.Interfaces;
-using application.StockManager.Application.responses;
 using domain.StockManager.Domain.Entities;
+using domain.StockManager.Domain.Entities.ValueObjects;
 using shared.StockManager.Shered.Utils;
 
 namespace application.StockManager.Application.Service;
@@ -21,28 +20,13 @@ public class MaterialService : IMaterialSerivice
 
     public async Task<Result<Material>> CreateMaterial(Material material, List<int> colorIds)
     {
-
-        if (colorIds == null || !colorIds.Any())
-        {
-            return Result<Material>.Failure("Lista de cores está vazia");
-        }
-
-        if (!material.CheckAmoutInputAmout(material.Amount))
-        {
-            return Result<Material>.Failure("A Quantidade do material não pode ser menor ou igual a zero.");
-        }
-
         var colors = await _colorRepository.GetAllColorsOnTheList(colorIds);
 
-        if (colors != null)
-        {
-            foreach (var colorsitem in colors)
-            {
-                material.AddInColorList(colorsitem);
-            }
-        }
+        MaterialInfo materialInfo = new(material.Name, material.Amount, material.Value);
 
-        await _materialRepository.SaveMaterial(material);
+        var newMaterial = Material.Create(materialInfo, colors);
+
+        await _materialRepository.Save(newMaterial);
 
         return Result<Material>.Created("Material criado com sucesso.");
     }
@@ -54,7 +38,7 @@ public class MaterialService : IMaterialSerivice
 
     public async Task<Result<IEnumerable<Material>>> GetAllMaterial()
     {
-        var materiais = await _materialRepository.GetMaterials();
+        var materiais = await _materialRepository.GetAll();
         return Result<IEnumerable<Material>>.Success(materiais);
     }
 }

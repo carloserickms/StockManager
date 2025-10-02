@@ -5,7 +5,7 @@ namespace application.StockManager.Application.Dtos.resquests
     public class CreateProductDto
     {
         public string name { get; set; }
-        public decimal value { get; set; }
+        public double value { get; set; }
         public double amount { get; set; }
         public string? urlImage { get; set; }
         public double discount { get; set; }

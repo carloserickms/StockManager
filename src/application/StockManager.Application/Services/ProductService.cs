@@ -66,7 +66,7 @@ namespace application.StockManager.Application.Service
                     await _materialRepository.UpdateMaterial(material);
                 }
 
-                await _productRepository.SaveProduct(newProduct);
+                await _productRepository.Save(newProduct);
             }
             catch (BusinessException ex)
             {
