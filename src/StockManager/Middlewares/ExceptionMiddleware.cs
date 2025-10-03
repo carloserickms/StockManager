@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using Domain.StockManager.Domain.Exceptions;
 
 namespace StockManager.Middlewares
 {
@@ -30,21 +31,28 @@ namespace StockManager.Middlewares
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            HttpStatusCode statusCode;
+            string message = exception.Message;
 
-            int statusCode;
-
-            statusCode = 500;
+            if (exception is BusinessException)
+            {
+                statusCode = HttpStatusCode.BadRequest;
+            }
+            else
+            {
+                statusCode = HttpStatusCode.InternalServerError;
+            }
 
             var response = new
             {
-                statusCode,
-                message = exception.Message
+                statusCode = (int)statusCode,
+                message
             };
 
             var json = JsonSerializer.Serialize(response);
 
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = (int)statusCode;
 
             return context.Response.WriteAsync(json);
         }

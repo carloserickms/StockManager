@@ -1,5 +1,5 @@
 using application.StockManager.Application.Dtos.resquests;
-using application.StockManager.Application.Interfaces;
+using application.StockManager.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using shared.StockManager.Shered.Helper;
 

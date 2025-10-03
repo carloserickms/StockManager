@@ -1,6 +1,6 @@
 using application.StockManager.Application.Dtos.resquests;
-using application.StockManager.Application.Interfaces;
-using application.StockManager.Application.responses;
+using application.StockManager.Application.Interfaces.Services;
+using application.StockManager.Application.Service;
 using Microsoft.AspNetCore.Mvc;
 using shared.StockManager.Shered.Helper;
 
@@ -10,9 +10,9 @@ namespace StockManager.Controllers
     [Route("api/v1/material")]
     public class MaterialController : ControllerBase
     {
-        private IMaterialSerivice _materialSerivice;
+        private IMaterialService _materialSerivice;
 
-        public MaterialController(IMaterialSerivice materialSerivice)
+        public MaterialController(IMaterialService materialSerivice)
         {
             _materialSerivice = materialSerivice;
         }
