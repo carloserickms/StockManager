@@ -1,5 +1,6 @@
 using application.StockManager.Application.Dtos.resquests;
-using application.StockManager.Application.Interfaces;
+using application.StockManager.Application.Interfaces.Repositories;
+using application.StockManager.Application.Interfaces.Services;
 using domain.StockManager.Domain.Entities;
 using domain.StockManager.Domain.Entities.ValueObjects;
 using Domain.StockManager.Domain.Exceptions;

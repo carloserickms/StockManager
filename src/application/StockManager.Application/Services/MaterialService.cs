@@ -1,12 +1,13 @@
 using application.StockManager.Application.Dtos.resquests;
-using application.StockManager.Application.Interfaces;
+using application.StockManager.Application.Interfaces.Repositories;
+using application.StockManager.Application.Interfaces.Services;
 using domain.StockManager.Domain.Entities;
 using domain.StockManager.Domain.Entities.ValueObjects;
 using shared.StockManager.Shered.Utils;
 
 namespace application.StockManager.Application.Service;
 
-public class MaterialService : IMaterialSerivice
+public class MaterialService : IMaterialService
 {
 
     private readonly IMaterialRepository _materialRepository;
