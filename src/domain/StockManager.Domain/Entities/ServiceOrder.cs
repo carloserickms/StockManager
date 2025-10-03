@@ -1,3 +1,4 @@
+using application.StockManager.Application.Service;
 using domain.StockManager.Domain.Entities.ValueObjects;
 using Domain.StockManager.Domain.Exceptions;
 
@@ -22,7 +23,7 @@ namespace domain.StockManager.Domain.Entities
 
         private ServiceOrder(DateTime deliveryDay, bool isDelivery, string deliveryLocation, int paymentMethodId, int statusId, int customerId) : base()
         {
-            OrderNumber = $"AG#{DateTime.Now:ddHH}";
+            OrderNumber = $"AG#{DateTime.Now:yyMMddHHmmss}";;
             DeliveryDay = deliveryDay;
             IsDelivery = isDelivery;
             DeliveryLocation = deliveryLocation;
@@ -31,7 +32,7 @@ namespace domain.StockManager.Domain.Entities
             CustomerId = customerId;
         }
 
-        public static ServiceOrder Create(ServiceOrderInfo serviceOrderInfo, IEnumerable<Product> products)
+        public static ServiceOrder Create(ServiceOrderInfo serviceOrderInfo, IEnumerable<Product> products, IEnumerable<ProductsRequirement> productsRequirements)
         {
             ServiceOrder serviceOrder = new(serviceOrderInfo.DeliveryDay, serviceOrderInfo.IsDelivery, serviceOrderInfo.DeliveryLocation, serviceOrderInfo.PaymentMethodId, serviceOrderInfo.StatusId, serviceOrderInfo.CustomerId);
 
@@ -40,23 +41,44 @@ namespace domain.StockManager.Domain.Entities
                 throw new BusinessException("Você precisa associar produtos que compoem a ordem de serviço.");
             }
 
-            foreach (var item in products)
+            bool availableQuantity = QuantityCalculator.CheckAvailableQuantityProduct(products, productsRequirements);
+
+            if (!availableQuantity)
             {
-                serviceOrder.Product.Add(item);
+                throw new BusinessException("Não há Produtos suficiente para adicionar");
             }
 
-            serviceOrder.OrderValue = serviceOrder.CalculateCotalValueOfServiceOrder(products);
+            foreach (var productItem in products)
+            {
+                foreach (var requiredItem in productsRequirements)
+                {
+                    if (productItem.Id == requiredItem.ProductId)
+                    {
+                        productItem.ReduceAmount(requiredItem.QuantityPerProduct);
+
+                        serviceOrder.Product.Add(productItem);
+                    }
+                }
+            }
+
+            serviceOrder.OrderValue = serviceOrder.CalculateCotalValueOfServiceOrder(products, productsRequirements);
 
             return serviceOrder;
         }
 
-        public int CalculateCotalValueOfServiceOrder(IEnumerable<Product> products)
+        public int CalculateCotalValueOfServiceOrder(IEnumerable<Product> products, IEnumerable<ProductsRequirement> productsRequirements)
         {
             int total = 0;
 
-            foreach (var item in products)
+            foreach (var productItem in products)
             {
-                total += item.Value;
+                foreach (var requiredItem in productsRequirements)
+                {
+                    if (productItem.Id == requiredItem.ProductId)
+                    {
+                        total = productItem.Value * requiredItem.QuantityPerProduct;
+                    }
+                }
             }
 
             return total;

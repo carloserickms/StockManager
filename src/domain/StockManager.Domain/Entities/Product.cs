@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using application.StockManager.Application.Service;
 using domain.StockManager.Domain.Entities.ValueObjects;
@@ -14,6 +15,7 @@ namespace domain.StockManager.Domain.Entities
         public string? UrlImage { get; private set; }
         public double Discount { get; private set; }
 
+        public ICollection<ServiceOrder> ServiceOrders { get; private set; } = new List<ServiceOrder>();
         public ICollection<Material> Materials { get; private set; } = new HashSet<Material>();
         public ICollection<Color>? Colors { get; private set; } = new HashSet<Color>();
         
@@ -21,7 +23,7 @@ namespace domain.StockManager.Domain.Entities
         private Product(string name, double value, double amount, string urlImage, double discount) : base()
         {
             Name = name;
-            Value = (int) value / 100;
+            Value = ConvertValueToInteger(value);
             Amount = amount;
             UrlImage = urlImage;
             Discount = discount;
@@ -29,7 +31,6 @@ namespace domain.StockManager.Domain.Entities
 
         public static Product Create(ProductInfo productInfo, IEnumerable<Material> materials, IEnumerable<Color> colorsList, IEnumerable<MaterialRequirement> requirements)
         {
-
             Product product = new(productInfo.Name, productInfo.Value, productInfo.Amount, productInfo.UrlImage, productInfo.Discount);
 
             if (!product.IsValidImageUrl(product.UrlImage))
@@ -37,7 +38,7 @@ namespace domain.StockManager.Domain.Entities
                 throw new BusinessException("Url inválida");
             }
 
-            bool availableQuantity = ProductionCalculator.CheckAvailableQuantity(product, materials, requirements);
+            bool availableQuantity = QuantityCalculator.CheckAvailableQuantityMaterials(product, materials, requirements);
 
             if (!availableQuantity)
             {
@@ -76,6 +77,18 @@ namespace domain.StockManager.Domain.Entities
             SetUpdated();
         }
 
+        public int ConvertValueToInteger(double value)
+        {
+            if (value == 0)
+            {
+                throw new BusinessException("Não foi possivel fazer a conversão. O campo valor esta como: 0");
+            }
+
+            int convertedValue = (int)(value * 100);
+
+            return convertedValue;
+        }
+
         public void UpdateUrlImage(string urlImage)
         {
             if (!RegexUtils.IsValidImageUrl(urlImage))
@@ -87,15 +100,40 @@ namespace domain.StockManager.Domain.Entities
             SetUpdated();
         }
 
-        public void UpdateAmount(double amount)
+        public void ReduceAmount(int amount)
         {
-            if (amount < 0)
+            if (!CheckAmoutInputAmout(amount))
             {
-                throw new ArgumentException($"Não é possível informar valores negativos. {amount}");
+                throw new ArgumentException($"Não é possível informar valores negativos.");
             }
 
-            Amount = amount;
+            Amount -= amount;
             SetUpdated();
+        }
+
+        public bool CheckAmoutInputAmout(int amount)
+        {
+            if (amount <= 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool CheckAvailableQuantity(int amountProductRequered)
+        {
+            if (amountProductRequered <= 0)
+            {
+                throw new ArgumentException("Quantidade de produtos não pode ser menor ou igual a 0.");
+            }
+
+            if (Amount < amountProductRequered)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public void ApplyDiscount(double discount)
