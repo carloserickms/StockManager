@@ -1,11 +1,10 @@
 using application.StockManager.Application.Dtos.resquests;
-using application.StockManager.Application.Interfaces;
+using application.StockManager.Application.Interfaces.Repositories;
 using domain.StockManager.Domain.Entities;
 using infrastructure.StockManager.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using ZstdSharp.Unsafe;
 
-namespace infrastructure.StockManager.Infrastructure.Repository
+namespace infrastructure.StockManager.Infrastructure.Repositories
 {
     public class MaterialRepository : RepositoryBase, IMaterialRepository
     {

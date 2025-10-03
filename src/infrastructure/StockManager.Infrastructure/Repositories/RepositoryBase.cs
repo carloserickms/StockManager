@@ -1,6 +1,6 @@
 using infrastructure.StockManager.Infrastructure.Persistence;
 
-namespace infrastructure.StockManager.Infrastructure.Repository
+namespace infrastructure.StockManager.Infrastructure.Repositories
 {
     public abstract class RepositoryBase
     {

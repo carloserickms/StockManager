@@ -1,9 +1,10 @@
-using application.StockManager.Application.Interfaces;
+using application.StockManager.Application.Dtos.resquests;
+using application.StockManager.Application.Interfaces.Repositories;
 using domain.StockManager.Domain.Entities;
 using infrastructure.StockManager.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace infrastructure.StockManager.Infrastructure.Repository
+namespace infrastructure.StockManager.Infrastructure.Repositories
 {
     public class ProductRepository : RepositoryBase, IProductRepository
     {
@@ -62,9 +63,43 @@ namespace infrastructure.StockManager.Infrastructure.Repository
             }
         }
 
-        public Task<Product> UpdateProduct(Product product)
+        public async Task Update(Product product)
         {
-            throw new NotImplementedException();
+            _context.Product.Update(product);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Product>> GetAllMaterialsOnTheList(List<ProductDto> ProductsList)
+        {
+            try
+            {
+                if (ProductsList == null || ProductsList.Count == 0)
+                {
+                    return Enumerable.Empty<Product>();
+                }
+
+                var ids = ProductsList
+                    .Select(p => p.id)
+                    .Where(id => id != default)
+                    .Distinct()
+                    .ToList();
+
+                if (ids.Count == 0)
+                {
+                    return Enumerable.Empty<Product>();
+                }
+
+                var products = await _context.Product
+                    .AsNoTracking()
+                    .Where(p => ids.Contains(p.Id))
+                    .ToListAsync();
+
+                return products;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Operação de buscar por id não pode ser concluida", ex);
+            }
         }
     }
 }
