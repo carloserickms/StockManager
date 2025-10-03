@@ -17,23 +17,7 @@ namespace infrastructure.StockManager.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Customer>()
-                .HasMany(e => e.ServiceOrders)
-                .WithOne(e => e.Customer)
-                .HasForeignKey(e => e.CustomerId)
-                .IsRequired();
-
-            modelBuilder.Entity<Status>()
-                .HasMany(e => e.ServiceOrders)
-                .WithOne(e => e.Status)
-                .HasForeignKey(e => e.StatusId)
-                .IsRequired();
-
-            modelBuilder.Entity<PaymentMethod>()
-                .HasMany(e => e.ServiceOrders)
-                .WithOne(e => e.PaymentMethod)
-                .HasForeignKey(e => e.PaymentMethodId)
-                .IsRequired();
+        
         }
     }
 }

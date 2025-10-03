@@ -1,7 +1,8 @@
-using application.StockManager.Application.Interfaces;
+using application.StockManager.Application.Interfaces.Repositories;
+using application.StockManager.Application.Interfaces.Services;
 using application.StockManager.Application.Service;
 using infrastructure.StockManager.Infrastructure.Persistence;
-using infrastructure.StockManager.Infrastructure.Repository;
+using infrastructure.StockManager.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,8 +34,10 @@ namespace infrastructure.StockManager.Infrastructure.Configurations
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IColorRepository, ColorRepository>();
             services.AddScoped<IMaterialRepository, MaterialRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IMaterialSerivice, MaterialService>();
+            services.AddScoped<IMaterialService, MaterialService>();
+            services.AddScoped<IOrderService, OrderService>();
         }
     }
 }
