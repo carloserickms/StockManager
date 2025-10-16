@@ -1,6 +1,8 @@
+using application.StockManager.Application.Dtos;
 using application.StockManager.Application.Dtos.resquests;
 using application.StockManager.Application.Interfaces.Repositories;
 using application.StockManager.Application.Interfaces.Services;
+using application.StockManager.Application.responses;
 using domain.StockManager.Domain.Entities;
 using domain.StockManager.Domain.Entities.ValueObjects;
 using shared.StockManager.Shered.Utils;
@@ -37,9 +39,63 @@ public class MaterialService : IMaterialService
         throw new NotImplementedException();
     }
 
-    public async Task<Result<IEnumerable<Material>>> GetAllMaterial()
+    public async Task<Result<IEnumerable<MaterialResponseDto>>> GetAllMaterial(int page)
     {
-        var materiais = await _materialRepository.GetAll();
-        return Result<IEnumerable<Material>>.Success(materiais);
+        var materiais = await _materialRepository.GetColorMaterial(page);
+        IEnumerable<MaterialResponseDto> materialList = new List<MaterialResponseDto>();
+
+        if (materiais == null || !materiais.Any())
+        {
+            return Result<IEnumerable<MaterialResponseDto>>.Failure("Materiais não encontrados.");
+        }
+
+        List<MaterialResponseDto> lista = new();
+
+        foreach (var item in materiais)
+        {
+            var responseDto = new MaterialResponseDto
+            {
+                id = item.Id,
+                name = item.Name,
+                amount = item.Amount,
+                value = item.Value,
+                colors = item.Colors?.Select(c => new ColorDto
+                {
+                    id = c.Id,
+                    name = c.Name
+                }).ToList()
+            };
+
+            lista.Add(responseDto);
+        }
+
+        return Result<IEnumerable<MaterialResponseDto>>.Success(lista);
+    }
+
+    public async Task<Result<IEnumerable<MaterialResponseDto>>> GetMaterialByName(string name)
+    {
+        var materiaisList = await _materialRepository.GetMaterialByName(name);
+
+        List<MaterialResponseDto> listMaterial = new();
+
+        foreach (var item in materiaisList)
+        {
+            var responseDto = new MaterialResponseDto
+            {
+                id = item.Id,
+                name = item.Name,
+                amount = item.Amount,
+                value = item.Value,
+                colors = item.Colors?.Select(c => new ColorDto
+                {
+                    id = c.Id,
+                    name = c.Name
+                }).ToList()
+            };
+
+            listMaterial.Add(responseDto);
+        }
+
+        return Result<IEnumerable<MaterialResponseDto>>.Success(listMaterial);
     }
 }

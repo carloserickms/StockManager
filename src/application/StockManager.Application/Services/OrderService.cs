@@ -1,3 +1,4 @@
+using application.StockManager.Application.Dtos;
 using application.StockManager.Application.Dtos.resquests;
 using application.StockManager.Application.Interfaces.Repositories;
 using application.StockManager.Application.Interfaces.Services;
