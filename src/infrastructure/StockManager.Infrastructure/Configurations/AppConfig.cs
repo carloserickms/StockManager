@@ -16,6 +16,7 @@ namespace infrastructure.StockManager.Infrastructure.Configurations
             {
                 ConfigureDataBase(services, connectionString);
                 ConfigureDependencyInjection(services);
+                
             }
             catch (Exception ex)
             {
@@ -32,11 +33,12 @@ namespace infrastructure.StockManager.Infrastructure.Configurations
         public static void ConfigureDependencyInjection(IServiceCollection services)
         {
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IColorRepository, ColorRepository>();
-            services.AddScoped<IMaterialRepository, MaterialRepository>();
-            services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IColorRepository, ColorRepository>();
+            services.AddScoped<IColorService, ColorService>();
+            services.AddScoped<IMaterialRepository, MaterialRepository>();
             services.AddScoped<IMaterialService, MaterialService>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderService, OrderService>();
         }
     }

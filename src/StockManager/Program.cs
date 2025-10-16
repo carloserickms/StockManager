@@ -5,8 +5,7 @@ using StockManager.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Add services
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
@@ -17,22 +16,30 @@ if (!string.IsNullOrEmpty(connectionString))
     AppConfig.StartDependences(builder.Services, connectionString);
 }
 
+// 1️⃣ Adiciona CORS nos serviços
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseCors();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
-
 app.UseHttpsRedirection();
-
 
 app.MapControllers();
 
+// Seed inicial
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();

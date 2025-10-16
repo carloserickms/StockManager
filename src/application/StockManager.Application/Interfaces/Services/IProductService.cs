@@ -1,3 +1,4 @@
+using application.StockManager.Application.Dtos;
 using application.StockManager.Application.Dtos.resquests;
 using domain.StockManager.Domain.Entities;
 using shared.StockManager.Shered.Utils;

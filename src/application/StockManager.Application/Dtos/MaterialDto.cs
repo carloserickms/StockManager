@@ -1,4 +1,4 @@
-namespace application.StockManager.Application.Dtos.resquests;
+namespace application.StockManager.Application.Dtos;
 
 public class MaterialDto
 {

@@ -1,4 +1,5 @@
 using application.StockManager.Application.Dtos.resquests;
+using application.StockManager.Application.responses;
 using domain.StockManager.Domain.Entities;
 using shared.StockManager.Shered.Utils;
 
@@ -8,6 +9,7 @@ namespace application.StockManager.Application.Interfaces.Services
     {
         public Task<Result<Material>> CreateMaterial(Material product, List<int>? colorIds);
         public Task<Result<Material>> DeleteMaterial(ActionUserDto actionUser);
-        public Task<Result<IEnumerable<Material>>> GetAllMaterial();
+        public Task<Result<IEnumerable<MaterialResponseDto>>> GetAllMaterial(int page);
+        public Task<Result<IEnumerable<MaterialResponseDto>>> GetMaterialByName(string name);
     }
 }

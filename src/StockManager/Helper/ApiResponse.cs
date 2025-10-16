@@ -4,11 +4,11 @@ namespace shared.StockManager.Shered.Helper
 {
     public static class ApiResponse
     {
-        public static IActionResult Success<T>(T data, int statusCode) =>
-            new ObjectResult(new { statusCode, data }) { StatusCode = 200 };
+        public static IActionResult Success<T>(T data, string message, int statusCode) =>
+            new ObjectResult(new { statusCode, message, data }) { StatusCode = 200 };
 
-        public static IActionResult Created(string mansager, int statusCode) =>
-            new ObjectResult(new { statusCode, mansager }) { StatusCode = 201 };
+        public static IActionResult Created(string message, int statusCode) =>
+            new ObjectResult(new { statusCode, message }) { StatusCode = 201 };
 
         public static IActionResult Fail(string message, int statusCode) =>
             new ObjectResult(new { statusCode, message }) { StatusCode = 400 };

@@ -1,7 +1,7 @@
 using application.StockManager.Application.Dtos.resquests;
 using application.StockManager.Application.Interfaces.Services;
-using application.StockManager.Application.Service;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1;
 using shared.StockManager.Shered.Helper;
 
 namespace StockManager.Controllers
@@ -31,11 +31,29 @@ namespace StockManager.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] int page)
         {
-            var resultMaterial = await _materialSerivice.GetAllMaterial();
+            var resultMaterial = await _materialSerivice.GetAllMaterial(page);
 
-            return ApiResponse.Success(resultMaterial, 200);
+            if (resultMaterial.IsSuccess == false)
+            {
+                ApiResponse.NotFound(resultMaterial.Message, 404);
+            }
+
+            return ApiResponse.Success(resultMaterial.Value, "Todos os materiais foram encontrados.", 200);
+        }
+
+        [HttpGet("getByName")]
+        public async Task<IActionResult> Get([FromQuery] string search)
+        {
+            var resultMaterial = await _materialSerivice.GetMaterialByName(search);
+
+            if (resultMaterial.IsSuccess == false)
+            {
+                ApiResponse.NotFound(resultMaterial.Message, 404);
+            }
+
+            return ApiResponse.Success(resultMaterial.Value, "Todos os materiais foram encontrados.", 200);
         }
     }
 }
