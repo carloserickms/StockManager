@@ -1,4 +1,4 @@
-using application.StockManager.Application.Dtos.resquests;
+using application.StockManager.Application.Dtos;
 using application.StockManager.Application.Interfaces.Repositories;
 using domain.StockManager.Domain.Entities;
 using infrastructure.StockManager.Infrastructure.Persistence;

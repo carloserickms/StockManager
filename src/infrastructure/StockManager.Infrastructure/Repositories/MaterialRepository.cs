@@ -1,4 +1,4 @@
-using application.StockManager.Application.Dtos.resquests;
+using application.StockManager.Application.Dtos;
 using application.StockManager.Application.Interfaces.Repositories;
 using domain.StockManager.Domain.Entities;
 using infrastructure.StockManager.Infrastructure.Persistence;
@@ -79,6 +79,42 @@ namespace infrastructure.StockManager.Infrastructure.Repositories
         {
             _context.Material.Update(material);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Material>> GetColorMaterial(int page)
+        {
+            try
+            {
+                int pageSize = 20;
+
+                var materiais = await _context.Material
+                    .Include(m => m.Colors)
+                    .OrderBy(m => m.Id)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+                return materiais;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Operação de buscar por ColorMaterial não pode ser concluida", ex);
+            }
+        }
+
+        public async Task<IEnumerable<Material>> GetMaterialByName(string name)
+        {
+            try
+            {
+                return await _context.Material.Where(m => m.Name.Contains(name))
+                            .Include(m => m.Colors)
+                            .OrderBy(m => m.Name)
+                            .ToListAsync();
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-using application.StockManager.Application.Dtos.resquests;
+using application.StockManager.Application.Dtos;
 using domain.StockManager.Domain.Entities;
 
 namespace application.StockManager.Application.Interfaces.Repositories
@@ -7,5 +7,7 @@ namespace application.StockManager.Application.Interfaces.Repositories
     {
         Task<IEnumerable<Material>> GetAllMaterialsOnTheList(List<MaterialDto> materialList);
         Task UpdateMaterial(Material material);
+        Task<IEnumerable<Material>> GetColorMaterial(int page);
+        Task<IEnumerable<Material>> GetMaterialByName(string name);
     }
 }
