@@ -55,5 +55,18 @@ namespace StockManager.Controllers
 
             return ApiResponse.Success(resultMaterial.Value, "Todos os materiais foram encontrados.", 200);
         }
+
+        [HttpGet("getById")]
+        public async Task<IActionResult> GetById([FromQuery] int id)
+        {
+            var resultMaterial = await _materialSerivice.GetMaterialById(id);
+
+            if (resultMaterial.IsSuccess == false)
+            {
+                ApiResponse.NotFound(resultMaterial.Message, 404);
+            }
+
+            return ApiResponse.Success(resultMaterial.Value, "Material encontrado.", 200);
+        }
     }
 }

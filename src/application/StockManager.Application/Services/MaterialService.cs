@@ -98,4 +98,29 @@ public class MaterialService : IMaterialService
 
         return Result<IEnumerable<MaterialResponseDto>>.Success(listMaterial);
     }
+
+    public async Task<Result<MaterialResponseDto>> GetMaterialById(int id)
+    {
+        var material = await _materialRepository.GetById(id);
+
+        if (material == null)
+        {
+            return Result<MaterialResponseDto>.Failure("Nenhum material encontrado.");
+        }
+
+        var responseDto = new MaterialResponseDto
+        {
+            id = material.Id,
+            amount = material.Amount,
+            name = material.Name,
+            value = material.Value,
+            colors = material.Colors?.Select(c => new ColorDto
+            {
+                id = c.Id,
+                name = c.Name
+            }).ToList()
+        };
+
+        return Result<MaterialResponseDto>.Success(responseDto);
+    }
 }

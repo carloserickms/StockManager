@@ -65,9 +65,13 @@ namespace infrastructure.StockManager.Infrastructure.Repositories
             }
         }
 
-        public Task<Material> GetById(int idMaterial)
+        public async Task<Material?> GetById(int idMaterial)
         {
-            throw new NotImplementedException();
+            return await _context.Material
+                .Where(m => m.Id == idMaterial)
+                .Include(m => m.Colors)
+                .OrderBy(m => m.Id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Material>> GetAll()
