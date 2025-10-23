@@ -1,4 +1,3 @@
-using domain.StockManager.Domain.Entities;
 
 namespace application.StockManager.Application.Dtos.resquests
 {

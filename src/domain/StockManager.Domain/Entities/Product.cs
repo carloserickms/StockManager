@@ -33,6 +33,11 @@ namespace domain.StockManager.Domain.Entities
         {
             Product product = new(productInfo.Name, productInfo.Value, productInfo.Amount, productInfo.UrlImage, productInfo.Discount);
 
+            if (String.IsNullOrEmpty(product.Name))
+            {
+                throw new BusinessException("Campo nome não pode esta vazio");
+            }
+
             if (!product.IsValidImageUrl(product.UrlImage))
             {
                 throw new BusinessException("Url inválida");
