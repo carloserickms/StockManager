@@ -14,6 +14,7 @@ namespace infrastructure.StockManager.Infrastructure.Persistence
         public DbSet<PaymentMethod> PaymentMethod { get; set; }
         public DbSet<Status> Status { get; set; }
         public DbSet<ServiceOrder> ServiceOrder { get; set; }
+        public DbSet<Gender> Gender { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

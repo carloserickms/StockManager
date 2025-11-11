@@ -40,6 +40,10 @@ namespace infrastructure.StockManager.Infrastructure.Configurations
             services.AddScoped<IMaterialService, MaterialService>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IGenderService, GenderService>();
+            services.AddScoped<IGenderRepository, GenderRepository>();
         }
     }
 }
