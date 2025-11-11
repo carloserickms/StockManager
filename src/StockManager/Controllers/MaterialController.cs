@@ -10,7 +10,7 @@ namespace StockManager.Controllers
     [Route("api/v1/material")]
     public class MaterialController : ControllerBase
     {
-        private IMaterialService _materialSerivice;
+        private readonly IMaterialService _materialSerivice;
 
         public MaterialController(IMaterialService materialSerivice)
         {
