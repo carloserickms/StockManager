@@ -1,4 +1,4 @@
-using application.StockManager.Application.responses;
+using application.StockManager.Application.Dtos.responses;
 using shared.StockManager.Shered.Utils;
 
 namespace application.StockManager.Application.Service
