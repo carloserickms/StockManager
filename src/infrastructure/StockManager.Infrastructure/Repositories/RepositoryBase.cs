@@ -11,5 +11,8 @@ namespace infrastructure.StockManager.Infrastructure.Repositories
             _context = context;
         }
 
+        protected RepositoryBase()
+        {
+        }
     }
 }
