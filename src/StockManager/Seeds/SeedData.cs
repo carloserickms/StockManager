@@ -60,4 +60,22 @@ namespace StockManager.Seeds
             }
         }
     }
+
+    public static class GenderSeed
+    {
+        public static void Seed(AppDbContext context)
+        {
+            if (!context.Gender.Any())
+            {
+                var GenderList = new List<Gender>
+                {
+                    new Gender("Masculino"),
+                    new Gender("Feminino"),
+                };
+
+                context.Gender.AddRange(GenderList);
+                context.SaveChanges();
+            };
+        }
+    }
 }

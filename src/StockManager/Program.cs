@@ -46,6 +46,7 @@ using (var scope = app.Services.CreateScope())
     ColorTableSeed.Seed(context);
     PaymentMethodSeed.Seed(context);
     StatusSeed.Seed(context);
+    GenderSeed.Seed(context);
 }
 
 app.Run();
