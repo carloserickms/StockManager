@@ -1,4 +1,4 @@
-namespace application.StockManager.Application.responses
+namespace application.StockManager.Application.Dtos.responses
 {
     public class ColorResponseDto
     {
