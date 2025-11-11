@@ -1,10 +1,11 @@
 using application.StockManager.Application.Dtos;
+using application.StockManager.Application.Dtos.responses;
 using application.StockManager.Application.Dtos.resquests;
 using application.StockManager.Application.Interfaces.Repositories;
 using application.StockManager.Application.Interfaces.Services;
-using application.StockManager.Application.responses;
 using domain.StockManager.Domain.Entities;
 using domain.StockManager.Domain.Entities.ValueObjects;
+using Domain.StockManager.Domain.Exceptions;
 using shared.StockManager.Shered.Utils;
 
 namespace application.StockManager.Application.Service;
@@ -27,9 +28,16 @@ public class MaterialService : IMaterialService
 
         MaterialInfo materialInfo = new(material.Name, material.Amount, material.Value);
 
-        var newMaterial = Material.Create(materialInfo, colors);
+        try
+        {
+            var newMaterial = Material.Create(materialInfo, colors);
 
-        await _materialRepository.Save(newMaterial);
+            await _materialRepository.Save(newMaterial);
+        }
+        catch (BusinessException ex)
+        {
+            return Result<Material>.Failure(ex.Message);
+        }
 
         return Result<Material>.Created("Material criado com sucesso.");
     }
