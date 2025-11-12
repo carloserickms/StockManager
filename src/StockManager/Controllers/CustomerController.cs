@@ -10,10 +10,12 @@ namespace StockManager.Controllers
     public class CustomerController
     {
         private readonly ICustomerService _customerService;
+        private readonly IGenderService _genderService;
 
-        public CustomerController(ICustomerService customerService)
+        public CustomerController(ICustomerService customerService, IGenderService genderService)
         {
             _customerService = customerService;
+            _genderService = genderService;
         }
 
 
@@ -44,7 +46,21 @@ namespace StockManager.Controllers
                 return ApiResponse.Fail(resultCustomer.Message, 400);
             }
 
-            return ApiResponse.Success(resultCustomer ,resultCustomer.Message, 200);
+            return ApiResponse.Success(resultCustomer, resultCustomer.Message, 200);
+        }
+
+
+        [HttpGet("getAllGender")]
+        public async Task<IActionResult> GetGender()
+        {
+            var resultGender = await _genderService.GetAllGender();
+
+            if (resultGender.IsSuccess == false)
+            {
+                return ApiResponse.Fail(resultGender.Message, 400);
+            }
+
+            return ApiResponse.Success(resultGender, resultGender.Message, 200);
         }
     }
 }

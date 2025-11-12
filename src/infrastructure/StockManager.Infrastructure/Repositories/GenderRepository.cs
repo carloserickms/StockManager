@@ -17,9 +17,16 @@ namespace infrastructure.StockManager.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Gender>> GetAll()
+        public async Task<IEnumerable<Gender>> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.Gender.ToListAsync();
+            }
+            catch (System.Exception ex)
+            { 
+                throw new Exception("Operação não pode ser concluida", ex);
+            }
         }
 
         public async Task<Gender> GetById(int id)
@@ -28,9 +35,9 @@ namespace infrastructure.StockManager.Infrastructure.Repositories
             {
                 return await _context.Gender.FirstAsync(g => g.Id == id);
             }
-            catch (System.Exception)
-            {
-                throw;
+            catch (System.Exception ex)
+            { 
+                throw new Exception("Operação não pode ser concluida", ex);
             }
         }
 

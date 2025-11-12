@@ -65,7 +65,8 @@ namespace application.StockManager.Application.Service
                         dateOfBirth = item.DateOfBirth,
                         region = item.Region,
                     };
-                };
+                }
+                ;
 
                 return Result<IEnumerable<CustomerResponseDto>>.Success(list);
             }
